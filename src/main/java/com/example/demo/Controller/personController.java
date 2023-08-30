@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.repository.personRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -27,10 +28,35 @@ public class personController {
 
         return personOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    //agregar nuevo usuario
     @PostMapping("/person")
     public person createPerson(@RequestBody person person) {
         return repository.save(person);
     }
+
+    //modificar el estado
+    @PutMapping("/persons/{id}/update-state")
+    public ResponseEntity<String> updatePersonState(@PathVariable Long id, @RequestBody Map<String, String> updateData) {
+        Optional<person> personOptional = repository.findById(id);
+
+        if (personOptional.isPresent()) {
+            person person = personOptional.get();
+
+            // Validación para asegurarse de que solo se modifique el campo de estado
+            if (updateData.containsKey("estado")) {
+                String newEstado = updateData.get("estado");
+                person.setEstado(newEstado);
+
+                repository.save(person); // Guardar los cambios en la base de datos
+
+                return ResponseEntity.ok("Estado actualizado correctamente.");
+            } else {
+                return ResponseEntity.badRequest().body("El cuerpo de la solicitud debe contener el campo 'estado'.");
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }
