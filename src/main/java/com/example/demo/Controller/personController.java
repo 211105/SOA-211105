@@ -20,7 +20,7 @@ public class personController {
         return repository.findAll();
     }
 
-    //traer por un ID
+    //traer por un ID dad
     @GetMapping("/persons/{id}")
     public ResponseEntity<person> getPersonById(@PathVariable Long id) {
         Optional<person> personOptional = repository.findById(id);
