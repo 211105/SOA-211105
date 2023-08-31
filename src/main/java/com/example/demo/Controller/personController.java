@@ -6,6 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.repository.personRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,8 +23,21 @@ import java.util.Optional;
 public class personController {
     @Autowired
     private personRepository repository;
-    //Listar todas
+
+
+    public personController(personRepository repository) {
+        this.repository = repository;
+    }
+
+    //paginacion
     @GetMapping("/persons")
+    public Page<person> allPersons(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+
+    //Listar todas
+    @GetMapping("/allpersons")
     public List<person> allPersons(){
         return repository.findAll();
     }
